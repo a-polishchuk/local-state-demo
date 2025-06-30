@@ -22,7 +22,7 @@ export function App() {
 
 function AppInner() {
     const { memos, selectedMemoId, dispatch } = useMemoContext();
-    const [isToolbarOpen, setIsToolbarOpen] = useState(false);
+    const [isToolbarOpen, setIsToolbarOpen] = useState(true);
 
     const toggleToolbar = () => {
         setIsToolbarOpen((val) => !val);

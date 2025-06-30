@@ -64,7 +64,7 @@ function update(state: ReducerState, memoData: MemoData): ReducerState {
         throw new Error(`Cannot find memo with id ${memoData.id}`);
     }
 
-    newState.memos[index] = memoData;
+    newState.memos[index] = structuredClone(memoData);
     return newState;
 }
 
