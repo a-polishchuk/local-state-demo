@@ -5,6 +5,8 @@ import { MemoContextProvider } from './MemoContext';
 import { createPosition } from './reducer';
 import { SettingsContextProvider } from './SettingsContext';
 import { useMemoContext } from './hooks/use-memo-context';
+import { useWindowEvent } from './hooks/use-window-event';
+import { useState } from 'react';
 
 export function App() {
     return (
@@ -20,6 +22,11 @@ export function App() {
 
 function AppInner() {
     const { memos, selectedMemoId, dispatch } = useMemoContext();
+    const [isToolbarOpen, setIsToolbarOpen] = useState(false);
+
+    const toggleToolbar = () => {
+        setIsToolbarOpen((val) => !val);
+    };
 
     const addMemo = () => {
         dispatch({
@@ -71,18 +78,35 @@ function AppInner() {
         },
     });
 
+    useWindowEvent('keydown', (e: KeyboardEvent) => {
+        if (!selectedMemoId) {
+            return;
+        }
+        if (e.key.toLowerCase() === 'd' && e.shiftKey) {
+            dispatch({
+                type: 'delete',
+                memoId: selectedMemoId,
+            });
+        }
+    });
+
     return (
         <>
             <div className="toolbar">
-                <button onClick={() => addMemo()}>Add Memo</button>
-                {memos.length > 0 && <button onClick={() => clear()}>Clear</button>}
-                {selectedMemoId && <button onClick={() => deleteSelected()}>Delete</button>}
+                <button onClick={toggleToolbar}>{isToolbarOpen ? '<<' : '>>'}</button>
+                {isToolbarOpen && (
+                    <>
+                        <button onClick={() => addMemo()}>Add Memo</button>
+                        {memos.length > 0 && <button onClick={() => clear()}>Clear</button>}
+                        {selectedMemoId && <button onClick={() => deleteSelected()}>Delete</button>}
+                    </>
+                )}
             </div>
             <div
+                className="memos"
                 ref={(element) => {
                     drop(element);
                 }}
-                className="memos"
             >
                 {memos.map((memo) => (
                     <Memo key={memo.id} {...memo} />

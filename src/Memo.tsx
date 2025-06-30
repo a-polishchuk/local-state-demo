@@ -2,7 +2,6 @@ import type { CSSProperties, FocusEventHandler } from 'react';
 import { useDrag } from 'react-dnd';
 import { useMemoContext } from './hooks/use-memo-context';
 import { useSettingsContext } from './hooks/use-settings-context';
-import { useWindowEvent } from './hooks/use-window-event';
 
 export type NewMemoData = {
     message: string;
@@ -63,18 +62,6 @@ export function Memo(memoData: MemoData) {
             },
         });
     };
-
-    useWindowEvent('keydown', (e: KeyboardEvent) => {
-        if (!isSelected) {
-            return;
-        }
-        if (e.key.toLowerCase() === 'd' && e.shiftKey) {
-            dispatch({
-                type: 'delete',
-                memoId: id,
-            });
-        }
-    });
 
     return (
         <div
